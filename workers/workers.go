@@ -4,7 +4,7 @@
 package workers
 
 import "fmt"
-import "time"
+// import "time"
 
 // Here's the worker, of which we'll run several
 // concurrent instances. These workers will receive
@@ -14,7 +14,7 @@ import "time"
 func worker(id int, q struct{Jobs chan int; Results chan int}) {
     for j := range q.Jobs {
         fmt.Println("worker", id, "started  job", j)
-        time.Sleep(time.Second)
+        // time.Sleep(time.Second)
         fmt.Println("worker", id, "finished job", j)
         q.Results <- j * 2
     }

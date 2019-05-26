@@ -6,19 +6,26 @@ import (
     "io/ioutil"
 		"os"
 		"time"
+		"strconv"
+		"encoding/binary"
     )
 
 func main() {
 	start := time.Now()
-	for j := 0; j < 100000; j++ {
-    response, err := http.Get("http://localhost:8080/")
+	for j := 0; j < 10; j++ {
+    response, err := http.Get("http://localhost:8080/" + strconv.Itoa(j))
     if err != nil {
         fmt.Printf("%s", err)
         os.Exit(1)
     } else {
         defer response.Body.Close()
-        ioutil.ReadAll(response.Body)
-        // fmt.Printf("%s\n", string(contents))
+        contents, err := ioutil.ReadAll(response.Body)
+        if err != nil {
+            fmt.Printf("%s", err)
+            os.Exit(1)
+				}
+				i := int64(binary.LittleEndian.Uint64(contents))
+        fmt.Printf("Completed request %v and result was %v\n", j, i)
     }
 	}
 	t := time.Now()
