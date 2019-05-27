@@ -4,16 +4,16 @@ import (
     "fmt"
     "net/http"
     "io/ioutil"
-		"os"
-		"time"
-		"strconv"
-		"encoding/binary"
+    "os"
+    "time"
+    // "strconv"
+    // "encoding/binary"
     )
 
 func main() {
 	start := time.Now()
 	for j := 0; j < 10; j++ {
-    response, err := http.Get("http://localhost:8080/" + strconv.Itoa(j))
+    response, err := http.Get("http://localhost:8080/" + "15kj3ba412")
     if err != nil {
         fmt.Printf("%s", err)
         os.Exit(1)
@@ -23,9 +23,9 @@ func main() {
         if err != nil {
             fmt.Printf("%s", err)
             os.Exit(1)
-				}
-				i := int64(binary.LittleEndian.Uint64(contents))
-        fmt.Printf("Completed request %v and result was %v\n", j, i)
+        }
+        // i := int64(binary.LittleEndian.Uint64(contents))
+        fmt.Printf("Completed request %v and result was %v\n", j, string(contents))
     }
 	}
 	t := time.Now()

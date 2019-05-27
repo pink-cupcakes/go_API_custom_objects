@@ -3,41 +3,50 @@ import (
   "net/http"
 	"strings"
 	// "fmt"
-	"encoding/binary"
-	"strconv"
+	// "encoding/binary"
+	// "strconv"
 	"github.com/sandbox/workers"
 )
 
 type Queues struct {
-	jobs chan int
-	results chan int
+	jobs chan string
+	results chan string
 	increment int
 }
 
 func (queues *Queues) sayHello(w http.ResponseWriter, r *http.Request) {
   message := r.URL.Path
 	message = strings.TrimPrefix(message, "/")
-	if i, err := strconv.Atoi(message); err == nil {
+	// if i, err := strconv.Atoi(message); err == nil {
 		// fmt.Println(i)
 		switch r.Method {
 		case http.MethodGet:
-			queues.jobs <- i
+			queues.jobs <- message
 			queues.increment++
 			select {
 			case result := <-queues.results:
-				b := make([]byte, 8)
-				binary.LittleEndian.PutUint64(b, uint64(result))
+				// b := make([]byte, 8)
+				// binary.LittleEndian.PutUint64(b, uint64(result))
 				// i := int64(binary.LittleEndian.Uint64(b))
 				// fmt.Println(i)
-				w.Write([]byte(b))
+				w.Write([]byte(result))
 			}
 			
 		case http.MethodPost:
-			w.Write([]byte("Testing post"))
+			queues.jobs <- message
+			queues.increment++
+			select {
+			case result := <-queues.results:
+				// b := make([]byte, 8)
+				// binary.LittleEndian.PutUint64(b, uint64(result))
+				// i := int64(binary.LittleEndian.Uint64(b))
+				// fmt.Println(i)
+				w.Write([]byte(result))
+			}
 		default:
 			http.Error(w, "Invalid method", 405)
 		}
-	}
+	// }
 }
 
 // func sayHello(w http.ResponseWriter, r *http.Request) {

@@ -11,30 +11,30 @@ import "fmt"
 // work on the `jobs` channel and send the corresponding
 // results on `results`. We'll sleep a second per job to
 // simulate an expensive task.
-func worker(id int, q struct{Jobs chan int; Results chan int}) {
+func worker(id int, q struct{Jobs chan string; Results chan string}) {
     for j := range q.Jobs {
         fmt.Println("worker", id, "started  job", j)
         // time.Sleep(time.Second)
         fmt.Println("worker", id, "finished job", j)
-        q.Results <- j * 2
+        q.Results <- j
     }
 }
 
-func Start() struct{Jobs chan int; Results chan int} {
+func Start() struct{Jobs chan string; Results chan string} {
     // In order to use our pool of workers we need to send
     // them work and collect their results. We make 2
     // channels for this.
     type Queues struct {
-        Jobs    chan int
-        Results chan int
+        Jobs    chan string
+        Results chan string
     }
-    q := Queues{make(chan int, 100000), make(chan int, 100000)}
+    q := Queues{make(chan string, 10000), make(chan string, 10000)}
     // jobs := make(chan int, 100000)
     // results := make(chan int, 100000)
 
     // This starts up 3 workers, initially blocked
     // because there are no jobs yet.
-    for w := 1; w <= 10000; w++ {
+    for w := 1; w <= 1000; w++ {
         go worker(w, q)
     }
 		
