@@ -16,7 +16,7 @@ func makeHttpPostReq(url string, ClickTimeID string){
     client := http.Client{}
 
 
-    var jsonprep string = `{"CTID":"`+ClickTimeID+`","Flag":"True"}`
+    var jsonprep string = `{"CTID":"`+ClickTimeID+`","Flag":true}`
 
     var jsonStr = []byte(jsonprep)
 
