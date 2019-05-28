@@ -32,7 +32,10 @@ func (queues *Queues) sayHello(w http.ResponseWriter, r *http.Request) {
 			}
 			json.Unmarshal([]byte(reqBody), &request)
 			for key, value := range request {
-				fmt.Println(key, value.(string))
+				select {
+				case key == "CTID":
+					fmt.Println(key, value.(string))
+				}
 			}
 			queues.jobs <- message
 			queues.increment++
