@@ -2,9 +2,12 @@ package main
 import (
   "net/http"
 	"strings"
-	// "fmt"
+	"fmt"
 	// "encoding/binary"
 	// "strconv"
+	// "log"
+	"io/ioutil"
+	"encoding/json"
 	"github.com/sandbox/workers"
 )
 
@@ -17,10 +20,20 @@ type Queues struct {
 func (queues *Queues) sayHello(w http.ResponseWriter, r *http.Request) {
   message := r.URL.Path
 	message = strings.TrimPrefix(message, "/")
+	// fmt.Println(message)
 	// if i, err := strconv.Atoi(message); err == nil {
 		// fmt.Println(i)
 		switch r.Method {
-		case http.MethodGet:
+		case http.MethodPost:
+			var request map[string]interface{}
+			reqBody, err := ioutil.ReadAll(r.Body)
+			if err != nil {
+				fmt.Println(err)
+			}
+			json.Unmarshal([]byte(reqBody), &request)
+			for key, value := range request {
+				fmt.Println(key, value.(string))
+			}
 			queues.jobs <- message
 			queues.increment++
 			select {
@@ -32,7 +45,7 @@ func (queues *Queues) sayHello(w http.ResponseWriter, r *http.Request) {
 				w.Write([]byte(result))
 			}
 			
-		case http.MethodPost:
+		case http.MethodGet:
 			queues.jobs <- message
 			queues.increment++
 			select {
