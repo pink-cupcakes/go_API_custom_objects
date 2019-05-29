@@ -50,6 +50,10 @@ func boundedParallelGet(urls []string, concurrencyLimit int) []result {
 			// any error that might have occoured
 			res, err := http.Get(url)
 			result := &result{i, *res, err}
+			if err != nil {
+				fmt.Println("COWABUNGA")
+			}
+			fmt.Println(i)
 
 			// now we can send the result struct through the resultsChan
 			resultsChan <- result
@@ -119,7 +123,7 @@ func main() {
 	}
 
 	// fmt.Println(benchmark(urls, 10))
-	// fmt.Println(benchmark(urls, 25))
+	fmt.Println(benchmark(urls, 25))
 	// fmt.Println(benchmark(urls, 50))
-	fmt.Println(benchmark(urls, 1000))
+	// fmt.Println(benchmark(urls, 1000))
 }

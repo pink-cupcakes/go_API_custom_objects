@@ -34,7 +34,7 @@ func Start() struct{Jobs chan string; Results chan string} {
 
     // This starts up 3 workers, initially blocked
     // because there are no jobs yet.
-    for w := 1; w <= 1000; w++ {
+    for w := 1; w <= 300; w++ {
         go worker(w, q)
     }
 		
