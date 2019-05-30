@@ -15,8 +15,7 @@ func makeHttpPostReq(url string, ClickTimeID string){
 
     client := http.Client{}
 
-
-    var jsonprep string = `{"CTID":"`+ClickTimeID+`","Flag":true}`
+    var jsonprep string = `{"CTID":"`+ClickTimeID+`","CTCompanyID": "1412asdf2001","Flag":true}`
 
     var jsonStr = []byte(jsonprep)
 
@@ -25,17 +24,17 @@ func makeHttpPostReq(url string, ClickTimeID string){
 
     resp, err := client.Do(req)
     if err != nil {
-            fmt.Println("Unable to reach the server.")
+        fmt.Println("Unable to reach the server.")
     } else {
-            body, _ := ioutil.ReadAll(resp.Body)
-            fmt.Println("body=", string(body))
+        body, _ := ioutil.ReadAll(resp.Body)
+        fmt.Println("body=", string(body))
     }
 
 }
 
 func main() {
 	start := time.Now()
-	for j := 0; j < 10; j++ {
+	for j := 0; j < 1000; j++ {
     // response, err := http.Get("http://localhost:8080/" + "15kj3ba412")
         makeHttpPostReq("http://localhost:8080/", "15kj3ba412")
     // if err != nil {

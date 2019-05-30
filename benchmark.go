@@ -6,6 +6,9 @@ import (
 	"sort"
 	"time"
 	"strconv"
+	"bytes"
+	"io/ioutil"
+	"math/rand"
 )
 
 // a struct to hold the result from each request including an index
@@ -48,8 +51,24 @@ func boundedParallelGet(urls []string, concurrencyLimit int) []result {
 			// send the request and put the response in a result struct
 			// along with the index so we can sort them later along with
 			// any error that might have occoured
-			res, err := http.Get(url)
-			result := &result{i, *res, err}
+			client := http.Client{}
+
+
+			var jsonprep string = `{"CTID":"` + strconv.Itoa(rand.Int()) + `1","CTCompanyID": "1412asdf2001","Flag":true}`
+	
+			var jsonStr = []byte(jsonprep)
+	
+			req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
+			req.Header.Set("Content-Type", "application/json")
+	
+			resp, err := client.Do(req)
+			if err != nil {
+				fmt.Println("Unable to reach the server.")
+			} else {
+				body, _ := ioutil.ReadAll(resp.Body)
+				fmt.Println("body=", string(body))
+			}
+			result := &result{i, *resp, err}
 			if err != nil {
 				fmt.Println("COWABUNGA")
 			}
@@ -62,7 +81,7 @@ func boundedParallelGet(urls []string, concurrencyLimit int) []result {
 			// has the effect of removing one from the limit and allowing
 			// another goroutine to start
 			<-semaphoreChan
-
+			return
 		}(i, url)
 	}
 
@@ -95,7 +114,7 @@ func boundedParallelGet(urls []string, concurrencyLimit int) []result {
 var urls []string
 
 func init() {
-	for i := 0; i < 4000; i++ {
+	for i := 0; i < 1000; i++ {
 		urls = append(urls, "http://localhost:8080/" + strconv.Itoa(i))
 	}
 }
@@ -123,7 +142,7 @@ func main() {
 	}
 
 	// fmt.Println(benchmark(urls, 10))
-	fmt.Println(benchmark(urls, 25))
+	// fmt.Println(benchmark(urls, 25))
 	// fmt.Println(benchmark(urls, 50))
-	// fmt.Println(benchmark(urls, 1000))
+	fmt.Println(benchmark(urls, 1000))
 }
