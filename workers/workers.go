@@ -19,9 +19,9 @@ func worker(id int, q struct{Jobs chan []byte; Results chan []byte; svc *dynamod
         json.Unmarshal([]byte(j), &request)
         av, err := dynamodbattribute.MarshalMap(request)
         if err != nil {
-                fmt.Println("Got error marshalling new movie item:")
-                fmt.Println(err.Error())
-                os.Exit(1)
+            fmt.Println("Got error marshalling new movie item:")
+            fmt.Println(err.Error())
+            os.Exit(1)
         }
         tableName := "CustomFields"
         input := &dynamodb.PutItemInput{
@@ -31,11 +31,10 @@ func worker(id int, q struct{Jobs chan []byte; Results chan []byte; svc *dynamod
         _, err = q.svc.PutItem(input)
         if err != nil {
             fmt.Println(input)
-                fmt.Println("Got error calling PutItem:")
-                fmt.Println(err.Error())
-                os.Exit(1)
+            fmt.Println("Got error calling PutItem:")
+            fmt.Println(err.Error())
+            os.Exit(1)
         }
-        // time.Sleep(time.Second)
         fmt.Println("worker", id, "finished job", j)
         q.Results <- j
     }
